@@ -1,8 +1,9 @@
 package com.naeunminchocofarm.ncf_api.lib.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwt;
-import io.jsonwebtoken.Jwts;
+import com.naeunminchocofarm.ncf_api.lib.exception.ExpiredAuthorizationDataException;
+import com.naeunminchocofarm.ncf_api.lib.exception.InvalidAuthorizationDataException;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -49,8 +50,6 @@ public class JwtHandler {
     /**
      * 리프레쉬 토큰을 생성합니다.
      * @param id 사용자를 식별할 수 있는 식별자
-     * @param roleName 역할 이름
-     * @param roleFlag 역할 번호
      * @return 리프레쉬 토큰
      */
     public String generateRefreshToken(Integer id) {
@@ -58,7 +57,7 @@ public class JwtHandler {
                 .claims()
                 .add("id", id)
                 .and()
-                .expiration(new Date(System.currentTimeMillis() + 1000L * this.EXPIRATION_SECONDS * 10))
+                .expiration(new Date(System.currentTimeMillis() + 1000L * 3600 * 24 * 7))
                 .signWith(this.PRIVATE_KEY)
                 .compact();
     }
@@ -69,12 +68,16 @@ public class JwtHandler {
      * @return Claims
      */
     public Claims parseToken(String jwt) {
-        return Jwts.parser()
-                .verifyWith(this.PUBLIC_KEY)
-                .build()
-                .parseSignedClaims(jwt)
-                .getPayload();
+        try {
+            return Jwts.parser()
+                    .verifyWith(this.PUBLIC_KEY)
+                    .build()
+                    .parseSignedClaims(jwt)
+                    .getPayload();
+        } catch(ExpiredJwtException ex) {
+            throw new ExpiredAuthorizationDataException("인증정보가 만료되었습니다.");
+        } catch (MalformedJwtException | SignatureException ex) {
+            throw new InvalidAuthorizationDataException("인증정보가 유효하지 않습니다.");
+        }
     }
-
-
 }

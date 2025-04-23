@@ -11,10 +11,10 @@ import java.util.Optional;
 
 @Mapper
 public interface MemberMapper {
-	public void signUp(Member member);
-	public Optional<Member> findByLoginId(@Param("loginId") String loginId);
-	public List<Member> getMemberList (@Param("pagination")Pagination pagination);
-	public LoginInfo getMemInfo(@Param("id")Integer id);
+	void signUp(Member member);
+	Optional<Member> findByLoginId(@Param("loginId") String loginId);
+	List<Member> getMemberList (@Param("pagination")Pagination pagination);
+	Optional<Member> findById(@Param("id") Integer id);
 	public int countByEmail(@Param("email") String email);
 	public int countByLoginId(@Param("loginId") String loginId);
 }
