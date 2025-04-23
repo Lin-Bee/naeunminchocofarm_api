@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 @RestController
@@ -41,9 +42,29 @@ public class MemberController {
 		return memberService.getMemberList(pagination);
 	}
 
-//	@GetMapping("/member/memberInfo/{id}")
-//	public ResponseEntity<LoginInfo> getMemInfo(@PathVariable Integer id) {
-//		LoginInfo loginInfo = memberService.getMemInfo(id);
-//		return ResponseEntity.ok(loginInfo);
-//	}
+	@GetMapping("/member/memberInfo/{id}")
+	public ResponseEntity<LoginInfo> getMemInfo(@PathVariable Integer id) {
+		LoginInfo loginInfo = memberService.getMemInfo(id);
+		return ResponseEntity.ok(loginInfo);
+	}
+
+	@GetMapping("/member/check-email")
+	public ResponseEntity<?> checkEmail(@RequestParam("email") String email) {
+		memberService.validateDuplicateEmail(email); // 중복이면 예외
+		return ResponseEntity.ok(Map.of(
+						"message", "사용 가능한 이메일입니다",
+						"valid", true
+		));
+	}
+
+	@GetMapping("/member/check-id")
+	public ResponseEntity<?> checkLoginId(@RequestParam("loginId") String loginId) {
+		memberService.validateDuplicateLoginId(loginId); // 중복이면 예외
+		return ResponseEntity.ok(Map.of(
+						"message", "사용 가능한 아이디입니다",
+						"valid", true
+		));
+	}
+
+
 }

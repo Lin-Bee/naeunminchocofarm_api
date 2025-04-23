@@ -8,9 +8,11 @@ import com.naeunminchocofarm.ncf_api.member.dto.MemberDTO;
 import com.naeunminchocofarm.ncf_api.member.entity.LoginInfo;
 import com.naeunminchocofarm.ncf_api.member.entity.Member;
 import com.naeunminchocofarm.ncf_api.member.mapper.MemberMapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -51,4 +53,18 @@ public class MemberService {
 	public LoginInfo getMemInfo(Integer id) {
 		return memberMapper.getMemInfo(id);
 	}
+
+	public void validateDuplicateEmail(String email) {
+		if (memberMapper.countByEmail(email) > 0) {
+			throw new ApiException("이미 사용 중인 이메일입니다", "INVALID_EMAIL", HttpStatus.CONFLICT);
+		}
+	}
+
+	public void validateDuplicateLoginId(String loginId) {
+		if (memberMapper.countByLoginId(loginId) > 0) {
+			throw new ApiException("이미 사용 중인 아이디입니다", "INVALID_LOGINID", HttpStatus.CONFLICT);
+		}
+	}
+
+
 }

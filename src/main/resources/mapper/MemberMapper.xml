@@ -74,6 +74,14 @@
         LIMIT  #{pagination.size} OFFSET #{pagination.skip}
     </select>
 
+    <select id="countByEmail" parameterType="string" resultType="int">
+        SELECT COUNT(*) FROM members WHERE email = #{email}
+    </select>
+
+    <select id="countByLoginId" parameterType="string" resultType="int">
+        SELECT COUNT(*) FROM members WHERE login_id = #{loginId}
+    </select>
+
     <!-- 필요한거 web 마이페이지 select-->
     <!--login info용임-->
     <select id="getMemInfo" resultType="com.naeunminchocofarm.ncf_api.member.entity.LoginInfo">

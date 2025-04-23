@@ -15,4 +15,6 @@ public interface MemberMapper {
 	public Optional<Member> findByLoginId(@Param("loginId") String loginId);
 	public List<Member> getMemberList (@Param("pagination")Pagination pagination);
 	public LoginInfo getMemInfo(@Param("id")Integer id);
+	public int countByEmail(@Param("email") String email);
+	public int countByLoginId(@Param("loginId") String loginId);
 }
